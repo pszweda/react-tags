@@ -402,6 +402,8 @@ class ReactTags extends Component {
 
   handleSuggestionClick(i) {
     this.addTag(this.state.suggestions[i]);
+    this.setState({ isFocused: false });
+    this.textInput.blur();
   }
 
   clearAll = () => {
