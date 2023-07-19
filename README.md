@@ -1,3 +1,6 @@
+# WARNING
+This repo is fork of great React-tags. Here are implemented some basic fixes to touch gestures and UX. 
+
 # React tags
 
 [![MIT](https://img.shields.io/npm/l/react-tag-input.svg?style=flat-square)](https://github.com/react-tags/react-tags/blob/master/LICENSE)
