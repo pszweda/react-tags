@@ -33,7 +33,7 @@ class Suggestions extends Component {
   };
 
   static defaultProps = {
-    minQueryLength: 2,
+    minQueryLength: 0,
   };
 
   shouldComponentUpdate(nextProps) {
@@ -107,7 +107,7 @@ class Suggestions extends Component {
             }}
             onTouchStart={(event) => {
               event.stopPropagation();
-              props.handleClick(i);
+              props.handleHover(i);
             }}
             onMouseOver={props.handleHover.bind(null, i)}
             className={

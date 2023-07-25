@@ -258,6 +258,7 @@ class ReactTags extends Component {
       this.props.handleInputFocus(value);
     }
     this.setState({ isFocused: true });
+    this.state.isFocused = true;
   }
 
   handleBlur(event) {
@@ -268,7 +269,9 @@ class ReactTags extends Component {
         this.textInput.value = '';
       }
     }
-    this.setState({ isFocused: false, currentEditIndex: -1 });
+    this.setState({ isFocused: false, query: '' });
+    this.state.isFocused = false;
+    this.state.query = '';
   }
 
   handleKeyDown(e) {
@@ -302,15 +305,6 @@ class ReactTags extends Component {
       if (selectedQuery !== '') {
         this.addTag(selectedQuery);
       }
-    }
-
-    // when backspace key is pressed and query is blank, delete tag
-    if (
-      e.keyCode === KEYS.BACKSPACE &&
-      query === '' &&
-      this.props.allowDeleteFromEmptyInput
-    ) {
-      this.handleDelete(this.props.tags.length - 1, e);
     }
 
     // up arrow
@@ -373,6 +367,16 @@ class ReactTags extends Component {
     if (allowUnique && existingKeys.indexOf(tag.id.toLowerCase()) >= 0) {
       return;
     }
+
+    // reset the state
+    this.setState({
+      query: '',
+      selectionMode: false,
+      selectedIndex: -1,
+      isFocused: false,
+    });
+    this.textInput.blur();
+
     if (this.props.autocomplete) {
       const possibleMatches = this.filteredSuggestions(tag[labelField]);
 
@@ -395,14 +399,18 @@ class ReactTags extends Component {
       selectionMode: false,
       selectedIndex: -1,
       currentEditIndex: -1,
+      isFocused: false,
     });
-
-    this.resetAndFocusInput();
   };
 
   handleSuggestionClick(i) {
     this.addTag(this.state.suggestions[i]);
-    this.setState({ isFocused: false });
+    this.setState({
+      query: '',
+      selectionMode: false,
+      selectedIndex: -1,
+      currentEditIndex: -1,
+    });
     this.textInput.blur();
   }
 
