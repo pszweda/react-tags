@@ -33,7 +33,7 @@ class Suggestions extends Component {
   };
 
   static defaultProps = {
-    minQueryLength: 2,
+    minQueryLength: 0,
   };
 
   shouldComponentUpdate(nextProps) {
