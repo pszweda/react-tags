@@ -30,6 +30,11 @@ class ReactTags extends Component {
         id: PropTypes.string.isRequired,
       })
     ),
+    additionlSuggestions: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+      })
+    ),
     delimiters: PropTypes.arrayOf(PropTypes.number),
     autofocus: PropTypes.bool,
     inline: PropTypes.bool, // TODO: Remove in v7.x.x
@@ -78,6 +83,7 @@ class ReactTags extends Component {
     placeholder: DEFAULT_PLACEHOLDER,
     labelField: DEFAULT_LABEL_FIELD,
     suggestions: [],
+    additionlSuggestions: [],
     delimiters: [...KEYS.ENTER, KEYS.TAB],
     autofocus: true,
     inline: true, // TODO: Remove in v7.x.x
@@ -109,9 +115,10 @@ class ReactTags extends Component {
       /* eslint-enable no-console */
     }
 
-    const { suggestions } = props;
+    const { suggestions, additionlSuggestions } = props;
     this.state = {
       suggestions,
+      additionlSuggestions,
       query: '',
       isFocused: false,
       selectedIndex: -1,
@@ -142,10 +149,34 @@ class ReactTags extends Component {
     if (!isEqual(prevProps.suggestions, this.props.suggestions)) {
       this.updateSuggestions();
     }
+    if (!isEqual(prevProps.additionlSuggestions, this.props.additionlSuggestions)) {
+      this.updateSuggestions();
+    }
   }
 
   filteredSuggestions = (query) => {
     let { suggestions } = this.props;
+    if (this.props.allowUnique) {
+      const existingTags = this.props.tags.map((tag) => tag.id.toLowerCase());
+      suggestions = suggestions.filter(
+        (suggestion) => !existingTags.includes(suggestion.id.toLowerCase())
+      );
+    }
+    if (this.props.handleFilterSuggestions) {
+      return this.props.handleFilterSuggestions(query, suggestions);
+    }
+
+    const exactSuggestions = suggestions.filter((item) => {
+      return this.getQueryIndex(query, item) === 0;
+    });
+    const partialSuggestions = suggestions.filter((item) => {
+      return this.getQueryIndex(query, item) > 0;
+    });
+    return exactSuggestions.concat(partialSuggestions);
+  };
+
+  filteredAdditionsSuggestions = (query) => {
+    let suggestions = this.props.additionlSuggestions;
     if (this.props.allowUnique) {
       const existingTags = this.props.tags.map((tag) => tag.id.toLowerCase());
       suggestions = suggestions.filter(
@@ -241,8 +272,13 @@ class ReactTags extends Component {
 
   updateSuggestions = () => {
     const { query, selectedIndex } = this.state;
-    const suggestions = this.filteredSuggestions(query);
-
+    let suggestions = [];
+    if (query.length === 0) {
+      suggestions = this.filteredSuggestions(query);
+    } else { 
+      suggestions = this.filteredAdditionsSuggestions(query);
+    }
+    
     this.setState({
       suggestions: suggestions,
       selectedIndex:
