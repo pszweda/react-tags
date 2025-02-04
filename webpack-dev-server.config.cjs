@@ -16,6 +16,14 @@ const config = {
     host: 'localhost',
     hot: true,
     compress: true,
+    client: {
+      webSocketURL: {
+        hostname: '8e54-89-25-226-221.ngrok-free.app',
+        port: 0,
+        protocol: 'wss',
+      },
+
+    },
   },
   devtool: 'cheap-module-source-map',
   output: {

@@ -138,7 +138,6 @@ const SuggestionsComp = (props: SuggestionsProps) => {
       <li
         key={index}
         onMouseDown={props.handleClick.bind(null, index)}
-        onTouchStart={props.handleClick.bind(null, index)}
         onMouseOver={props.handleHover.bind(null, index)}
         className={
           index === props.selectedIndex ? props.classNames.activeSuggestion : ''
@@ -149,11 +148,9 @@ const SuggestionsComp = (props: SuggestionsProps) => {
   });
 
   // use the override, if provided
-  if (
-    suggestions.length === 0 ||
-    !shouldRenderSuggestions(
+  if (!shouldRenderSuggestions(
       query,
-      minQueryLength || 2,
+      minQueryLength || 0,
       isFocused,
       props.shouldRenderSuggestions
     )
